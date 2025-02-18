@@ -10,6 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react"
+import {Plus} from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -45,8 +47,10 @@ export function AddExpense({
   });
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button className="m-4 w-64 color=[#EE8F3E]">Add Expense</Button>
+      <DialogTrigger  asChild>
+        <Button className="bg-[#ee8f3e] m-4 w-64">
+        <Plus />
+          Add Expense</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -75,14 +79,6 @@ export function AddExpense({
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
-
-            {/* <Input
-              id="type"
-              className="col-span-3"
-              onChange={(e) => {
-                setExpense({ ...expense, type: e.target.value });
-              }}
-            /> */}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="amount" className="text-right">
@@ -127,6 +123,7 @@ export function AddExpense({
         </div>
         <DialogFooter>
           <Button type="submit" onClick={onClick} disabled={loading}>
+            {loading && <Loader2 className="animate-spin" />}
             {loading ? "Processing" : "Add Expense"}
           </Button>
         </DialogFooter>

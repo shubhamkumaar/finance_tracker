@@ -1,36 +1,153 @@
 "use client";
 import axios from "axios";
-import React from "react";
+import React, { PureComponent } from "react";
+import {
+  BarChart,
+  Bar,
+  Rectangle,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Pie,
+} from "recharts";
+
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AddExpense } from "@/components/addExpense";
 import { columns } from "./column";
 import { DataTable } from "./data-table";
 import { EditDeleteDialog } from "./edit-delete-dialog";
+import { EditExpense } from "@/app/expense/editExpense";
+import { PieChartz } from "@/app/expense/pie-chart";
 
+const data = [
+  {
+    name: "January",
+    expense: 0,
+  },
+  {
+    name: "February",
+    expense: 0,
+  },
+  {
+    name: "March",
+    expense: 0,
+  },
+  {
+    name: "April",
+    expense: 0,
+  },
+  {
+    name: "May",
+    expense: 0,
+  },
+  {
+    name: "June",
+    expense: 0,
+  },
+  {
+    name: "July",
+    expense: 0,
+  },
+  {
+    name: "August",
+    expense: 0,
+  },
+  {
+    name: "September",
+    expense: 0,
+  },
+  {
+    name: "October",
+    expense: 0,
+  },
+  {
+    name: "November",
+    expense: 0,
+  },
+  {
+    name: "December",
+    expense: 0,
+  },
+];
+const pieData: { name: string; value: number }[] = [];
+
+function addPieData(expenses: any) {
+  pieData.length = 0;
+  expenses.forEach((expense: any) => {
+    if (pieData.find((data) => data.name === expense.type)) {
+      const index = pieData.findIndex((data) => data.name === expense.type);
+      pieData[index].value += expense.amount;
+    } else {
+      pieData.push({ name: expense.type, value: expense.amount });
+    }
+  });
+  // console.log("Pie Data", pieData);
+}
+
+function addAmount(expenses: any) {
+  for (let i = 0; i < expenses.length; i++) {
+    const date = new Date(expenses[i].date);
+    const month = date.getMonth();
+    data[month].expense += expenses[i].amount;
+  }
+}
 function Expense() {
-  const [id, setId] = React.useState("");
   const [editDeleteDialogOpen, setEditDeleteDialogOpen] = React.useState(false);
   const [expense, setExpense] = React.useState({
-    type: "others",
+    type: "",
     amount: 0,
     description: "",
     date: new Date(),
   });
-
-  function handleExpenseRowClick(_id: string) {
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
+  const [expenses, setExpenses] = React.useState<
+    {
+      _id: string;
+      type: string;
+      amount: number;
+      description: string;
+      date: Date;
+    }[]
+  >([]);
+  const [openEditExpense, setOpenEditExpense] = React.useState(false);
+  const [id, setId] = React.useState("");
+  async function handleExpenseRowClick(_id: string) {
     console.log("Row clicked", _id);
-    setEditDeleteDialogOpen(true);
     setId(_id);
+    setEditDeleteDialogOpen(true);
+    const foundExpense = await expenses.find((expense) => expense._id === _id);
+    if (foundExpense) {
+      setExpense(foundExpense);
+      console.log("Expense found", foundExpense);
+    } else {
+      console.error("Expense not found");
+    }
   }
+
   const editExpense = async () => {
     console.log("Edit Expense");
-
     try {
+      setLoading(true);
+      console.log("Edit Expense", expense);
+      const res = await axios.patch(`/api/expense`, { ...expense, id });
+      console.log("Patch", res.data);
+      toast.success("Expense Updated Successfully");
+      setExpenses((prev) => {
+        const index = prev.findIndex((expense) => expense._id === id);
+        if (index !== -1) {
+          prev[index] = res.data.data;
+        }
+        return prev;
+      });
     } catch (error: any) {
       console.log("Edit Expense Error", error.message);
     } finally {
-      setEditDeleteDialogOpen(false);
+      setOpenEditExpense(false);
     }
   };
   const deleteExpense = async () => {
@@ -38,18 +155,40 @@ function Expense() {
     try {
       const res = await axios.delete(`/api/expense`, { data: { id } });
       toast.success("Expense Deleted Successfully");
-      console.log("Delete Expense Success", res.data);
+      setExpenses((prev) => {
+        return prev.filter((expense) => expense._id !== id);
+      });
+      // console.log("Delete Expense Success", res.data);
     } catch (error: any) {
       console.log("Delete Expense Error", error.message);
     } finally {
       setEditDeleteDialogOpen(false);
     }
   };
-  const router = useRouter();
-
-  const [loading, setLoading] = React.useState(false);
 
   const addExpense = async () => {
+    if (expense.type === "") {
+      toast.error("Type cannot be empty");
+      throw new Error("Type cannot be empty");
+    }
+    if (!expense.amount) {
+      toast.error("Amount cannot be empty");
+      throw new Error("Amount cannot be empty");
+    }
+    if (expense.amount === 0) {
+      toast.error("Amount cannot be 0");
+      throw new Error("Amount cannot be 0");
+    }
+    if (expense.amount < 0) {
+      toast.error("Amount cannot be negative");
+      throw new Error("Amount cannot be negative");
+    }
+
+    if (expense.date === null) {
+      toast.error("Date cannot be empty");
+      throw new Error("Date cannot be empty");
+    }
+
     try {
       setLoading(true);
       const res = await axios.post("/api/expense", expense);
@@ -63,7 +202,6 @@ function Expense() {
     }
   };
 
-  const [expenses, setExpenses] = React.useState([]);
   const getExpenses = async () => {
     try {
       const res = await axios.get("/api/expense");
@@ -78,12 +216,64 @@ function Expense() {
     getExpenses();
   }, []);
 
+  React.useEffect(() => {
+    if (expenses.length > 0) {
+      addAmount(expenses);
+      addPieData(expenses);
+    }
+  }, [expenses]);
+
   return (
     <div>
+      <div className="flex">
+        <div className="w-[66%] h-96 mt-8">
+          {expenses.length > 0 && (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                width={900}
+                height={400}
+                data={data}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="expense"
+                  fill="#8884d8"
+                  activeBar={<Rectangle fill="pink" stroke="blue" />}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+        <div>
+          {data && data.length > 0 ? (
+            <PieChartz data={pieData} />
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+      </div>
       <AddExpense
         onClick={addExpense}
         onChange={(expense) => setExpense(expense)}
         loading={loading}
+      />
+      <EditExpense
+        expense={expense}
+        loading={loading}
+        onClick={editExpense}
+        openEditDialog={openEditExpense}
+        setExpense={setExpense}
+        closeEditDialog={() => setOpenEditExpense(false)}
       />
       <DataTable
         columns={columns}
@@ -92,7 +282,11 @@ function Expense() {
       />
       <Toaster />
       <EditDeleteDialog
-        edit={editExpense}
+        id={id}
+        edit={() => {
+          setOpenEditExpense(true);
+          setEditDeleteDialogOpen(false);
+        }}
         Delete={deleteExpense}
         editDeleteDialogOpen={editDeleteDialogOpen}
         setEditDeleteDialogOpen={setEditDeleteDialogOpen}

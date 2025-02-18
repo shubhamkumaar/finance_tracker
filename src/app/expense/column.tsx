@@ -61,31 +61,31 @@ export const columns: ColumnDef<Expense>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const expense = row.original;
-      // console.log(expense);
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => {
+  //     const expense = row.original;
+  //     // console.log(expense);
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(expense._id)}
-            ></DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <MoreHorizontal />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuItem
+  //             onClick={() => navigator.clipboard.writeText(expense._id)}
+  //           ></DropdownMenuItem>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuItem>View customer</DropdownMenuItem>
+  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
