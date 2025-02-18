@@ -77,15 +77,16 @@ const pieData: { name: string; value: number }[] = [];
 
 function addPieData(expenses: any) {
   pieData.length = 0;
-  expenses.forEach((expense: any) => {
-    if (pieData.find((data) => data.name === expense.type)) {
+  expenses.forEach((expense:any) => {
+    if(pieData.find((data) => data.name === expense.type)){
       const index = pieData.findIndex((data) => data.name === expense.type);
       pieData[index].value += expense.amount;
-    } else {
-      pieData.push({ name: expense.type, value: expense.amount });
+    }else{
+      pieData.push({name:expense.type, value: expense.amount});
     }
   });
   // console.log("Pie Data", pieData);
+  
 }
 
 function addAmount(expenses: any) {
@@ -254,13 +255,7 @@ function Expense() {
             </ResponsiveContainer>
           )}
         </div>
-        <div>
-          {data && data.length > 0 ? (
-            <PieChartz data={pieData} />
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
+        {expenses.length>0 && <PieChartz data={pieData}/>}
       </div>
       <AddExpense
         onClick={addExpense}
