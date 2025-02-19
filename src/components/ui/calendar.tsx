@@ -1,13 +1,36 @@
-"use client"
+"use client";
+import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker, useNavigation, CaptionProps } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { format } from "date-fns";
 
-import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+function CustomCaption({ displayMonth }: CaptionProps) {
+  const { goToMonth, nextMonth, previousMonth } = useNavigation();
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+  return (
+    <div className="flex items-center justify-between p-2">
+      <button
+        onClick={() => previousMonth && goToMonth(previousMonth)}
+        disabled={!previousMonth}
+        aria-label="Previous Month"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      <span>{format(displayMonth, "MMMM yyyy")}</span>
+      <button
+        onClick={() => nextMonth && goToMonth(nextMonth)}
+        disabled={!nextMonth}
+        aria-label="Next Month"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
 
 function Calendar({
   className,
@@ -60,17 +83,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
-        ),
+        Caption: CustomCaption,
       }}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = "Calendar"
-
-export { Calendar }
+Calendar.displayName = "Calendar";
+export { Calendar };

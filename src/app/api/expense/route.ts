@@ -76,36 +76,3 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-// export const getMostRecentTransaction = async () => {
-//   try {
-//     const recentTransaction = await Expense.findOne().sort({ date: -1 }); // Sort by `date` in descending order
-//     return recentTransaction;
-//   } catch (error) {
-//     console.error("Error fetching recent transaction:", error);
-//     throw new Error("Failed to fetch recent transaction");
-//   }
-// };
-
-// export const getTotalExpense = async () => {
-//   try {
-//     const totalExpense = await Expense.aggregate([
-//       {
-//         $group: {
-//           _id: null, // Group all documents
-//           totalAmount: { $sum: "$amount" }, // Sum total amount
-//         },
-//       },
-//       {
-//         $project: {
-//           _id: 0, // Remove default `_id`
-//           totalAmount: 1,
-//         },
-//       },
-//     ]);
-//     return totalExpense[0].totalAmount;
-//   } catch (error) {
-//     console.error("Error fetching total expense:", error);
-//     throw new Error("Failed to fetch total expense");
-//   }
-// };

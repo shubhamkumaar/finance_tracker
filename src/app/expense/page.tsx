@@ -16,8 +16,8 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AddExpense } from "@/components/addExpense";
-import { columns } from "./column";
-import { DataTable } from "./data-table";
+import { columns } from "../../components/column";
+import { DataTable } from "../../components/data-table";
 import { EditDeleteDialog } from "./edit-delete-dialog";
 import { EditExpense } from "@/app/expense/editExpense";
 import { PieChartz } from "@/app/expense/pie-chart";
