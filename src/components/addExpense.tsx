@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { TimePicker } from "@/components/time-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/popover"
 
 
-
 type expense = {
   type: string;
   amount: number;
@@ -55,11 +54,10 @@ export function AddExpense({
     type: "others",
     amount: 0,
     description: "",
-    date: new Date(
-      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    ),
+    date: new Date(),
   });
   const [date, setDate] = React.useState<Date>()
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -129,37 +127,42 @@ export function AddExpense({
             <Label htmlFor="date" className="text-right">
               Date :
             </Label>
-            <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-[240px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
-          )}
-        >
-          <CalendarIcon />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={expense.date}
-          onSelect={(date) => {
-            if (date) {
-              setExpense({ ...expense, date: date });
-              onChange({ ...expense, date: date });
-            }
-          }}
-        />
-      </PopoverContent>
-    </Popover>
-            {/* <DateTimePicker
-              onChange={(date)=>{
-                onChange({ ...expense, date:date });
-              }}
-            /> */}
+            <div>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[240px] justify-start text-left font-normal",
+                                  !date && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon />
+                                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={(date: any) => {
+                                  // setExpense({ ...expense, date:date});
+                                  setDate(date);
+                                }}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <div className="mt-4">
+                          <TimePicker 
+                            date={date}
+                            setDate={(date: any) => {
+                              setDate(date);
+                              setExpense({ ...expense, date: date });
+                            }}
+                          />
+                          </div>
+                        </div>
           </div>
         </div>
         <DialogFooter>

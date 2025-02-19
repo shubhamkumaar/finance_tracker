@@ -10,6 +10,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { TimePicker } from "@/components/time-picker";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +53,7 @@ export function EditExpense({
   openEditDialog: boolean;
   closeEditDialog: () => void;
 }) {
+  const [date, setDate] = React.useState<Date>(expense.date);
   return (
     <Dialog open={openEditDialog} onOpenChange={closeEditDialog}>
       <DialogContent className="sm:max-w-[425px]">
@@ -106,13 +117,42 @@ export function EditExpense({
             <Label htmlFor="date" className="text-right">
               Date :
             </Label>
-            <DateTimePicker
-              onChange={(date: Date | null) => {
-                if (date) {
-                  setExpense({ ...expense, date });
-                }
-              }}
-            />
+            <div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-[240px] justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(date: any) => {
+                      // setExpense({ ...expense, date:date});
+                      setDate(date);
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <div className="mt-4">
+              <TimePicker 
+                date={date}
+                setDate={(date: any) => {
+                  setDate(date);
+                  setExpense({ ...expense, date: date });
+                }}
+              />
+              </div>
+            </div>
           </div>
         </div>
         <DialogFooter>

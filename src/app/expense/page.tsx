@@ -146,6 +146,7 @@ function Expense() {
     } catch (error: any) {
       console.log("Edit Expense Error", error.message);
     } finally {
+      setLoading(false);
       setOpenEditExpense(false);
     }
   };
