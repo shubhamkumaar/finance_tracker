@@ -44,8 +44,8 @@ export default function Home() {
     getOverallExpense();
   }, []);
   return (
-    <div>
-      <h1 className="text-2xl text-justify align-center text-red-400">Hello</h1>
+    <div className="container border-2 border-gray-200 m-4 w-full h-screen">
+      
     </div>
   );
 }
