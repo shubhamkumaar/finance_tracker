@@ -10,8 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react"
-import {Plus} from "lucide-react"
+import { Loader2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import React from "react";
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+
 
 type expense = {
   type: string;
@@ -43,14 +55,18 @@ export function AddExpense({
     type: "others",
     amount: 0,
     description: "",
-    date: new Date(),
+    date: new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    ),
   });
+  const [date, setDate] = React.useState<Date>()
   return (
     <Dialog>
-      <DialogTrigger  asChild>
+      <DialogTrigger asChild>
         <Button className="bg-[#ee8f3e] m-4 w-64">
-        <Plus />
-          Add Expense</Button>
+          <Plus />
+          Add Expense
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -113,12 +129,37 @@ export function AddExpense({
             <Label htmlFor="date" className="text-right">
               Date :
             </Label>
-            <DateTimePicker
-              onChange={(e: any) =>
-                // setExpense({ ...expense, date: new Date(e.target.value) });
-                onChange({ ...expense, date: new Date(e.target.value) })
-              }
-            />
+            <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn(
+            "w-[240px] justify-start text-left font-normal",
+            !date && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon />
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={expense.date}
+          onSelect={(date) => {
+            if (date) {
+              setExpense({ ...expense, date: date });
+              onChange({ ...expense, date: date });
+            }
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+            {/* <DateTimePicker
+              onChange={(date)=>{
+                onChange({ ...expense, date:date });
+              }}
+            /> */}
           </div>
         </div>
         <DialogFooter>

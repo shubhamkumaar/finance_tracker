@@ -95,17 +95,17 @@ export function PieChartz({ data }: { data: { name: string; value: number }[] })
   React.useEffect(() => {
       setChartData(data);
   }, []);
-  console.log("chartData", chartData);
+  // console.log("chartData", chartData);
   
-  console.log("Pie Data", data);
+  // console.log("Pie Data", data);
   return (
     <PieChart width={500} height={500}>
     <Pie
       activeIndex={activeIndex}
       activeShape={renderActiveShape}
       data={chartData}
-      cx={200}
-      cy={200}
+      cx={250}
+      cy={250}
       innerRadius={60}
       outerRadius={80}
       fill="#8884d8"

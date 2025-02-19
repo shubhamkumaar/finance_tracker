@@ -15,10 +15,8 @@ import { TimePickerDemo } from "./time-picker";
 
 export function DateTimePicker({
   onChange,
-  value,
 }: {
   onChange: (date: Date) => void;
-  value?: Date;
 }) {
   const [date, setDate] = React.useState<Date>();
   console.log(date);

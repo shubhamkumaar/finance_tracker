@@ -77,16 +77,15 @@ const pieData: { name: string; value: number }[] = [];
 
 function addPieData(expenses: any) {
   pieData.length = 0;
-  expenses.forEach((expense:any) => {
-    if(pieData.find((data) => data.name === expense.type)){
+  expenses.forEach((expense: any) => {
+    if (pieData.find((data) => data.name === expense.type)) {
       const index = pieData.findIndex((data) => data.name === expense.type);
       pieData[index].value += expense.amount;
-    }else{
-      pieData.push({name:expense.type, value: expense.amount});
+    } else {
+      pieData.push({ name: expense.type, value: expense.amount });
     }
   });
   // console.log("Pie Data", pieData);
-  
 }
 
 function addAmount(expenses: any) {
@@ -131,7 +130,6 @@ function Expense() {
   }
 
   const editExpense = async () => {
-    console.log("Edit Expense");
     try {
       setLoading(true);
       console.log("Edit Expense", expense);
@@ -185,13 +183,9 @@ function Expense() {
       throw new Error("Amount cannot be negative");
     }
 
-    if (expense.date === null) {
-      toast.error("Date cannot be empty");
-      throw new Error("Date cannot be empty");
-    }
-
     try {
       setLoading(true);
+      console.log("Add Expense", expense);      
       const res = await axios.post("/api/expense", expense);
       toast.success("Expense added successfully");
       router.push("/expense");
@@ -213,6 +207,15 @@ function Expense() {
     }
   };
 
+  const getTodayExpenses = async () => {
+    try {
+      const res = await axios.get("/api/expense");
+      console.log("Get Today Expenses success", res.data);
+    } catch (error: any) {
+      console.log("Get Today Expenses Error", error.message);
+    }
+  }
+
   React.useEffect(() => {
     getExpenses();
   }, []);
@@ -226,8 +229,26 @@ function Expense() {
 
   return (
     <div>
-      <div className="flex">
-        <div className="w-[66%] h-96 mt-8">
+      <div className="flex justify-end mt-8">
+        <AddExpense
+          onClick={addExpense}
+          onChange={(expense) => setExpense(expense)}
+          loading={loading}
+        />
+      </div>
+      <EditExpense
+        expense={expense}
+        loading={loading}
+        onClick={editExpense}
+        openEditDialog={openEditExpense}
+        setExpense={setExpense}
+        closeEditDialog={() => setOpenEditExpense(false)}
+      />
+      <div className="flex mt-8">
+        <div className="w-[100%] h-96">
+          <h1 className="text-2xl font-bold text-center">
+            Month Wise Expenses
+          </h1>
           {expenses.length > 0 && (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -255,26 +276,26 @@ function Expense() {
             </ResponsiveContainer>
           )}
         </div>
-        {expenses.length>0 && <PieChartz data={pieData}/>}
       </div>
-      <AddExpense
-        onClick={addExpense}
-        onChange={(expense) => setExpense(expense)}
-        loading={loading}
-      />
-      <EditExpense
-        expense={expense}
-        loading={loading}
-        onClick={editExpense}
-        openEditDialog={openEditExpense}
-        setExpense={setExpense}
-        closeEditDialog={() => setOpenEditExpense(false)}
-      />
-      <DataTable
-        columns={columns}
-        data={expenses}
-        handleExpenseRowClick={handleExpenseRowClick}
-      />
+      <div className="flex mx-4 mt-12">
+        <div className="w-[33%]">
+          <h1 className="text-2xl font-bold text-center">
+            Category Wise Expenses
+          </h1>
+          <div className="mt-2 border-2 border-gray-200 rounded-lg">
+            {expenses.length > 0 && <PieChartz data={pieData} />}
+          </div>
+        </div>
+        <div className="w-[66%]">
+          <h1 className="text-2xl text-center">All Expenses</h1>
+          <DataTable
+            columns={columns}
+            data={expenses}
+            handleExpenseRowClick={handleExpenseRowClick}
+          />
+        </div>
+      </div>
+
       <Toaster />
       <EditDeleteDialog
         id={id}
