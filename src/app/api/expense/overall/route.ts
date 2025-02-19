@@ -1,9 +1,9 @@
 import { Expense } from "@/models/expenseModel";
 import { connect } from "@/dbConfig/dbConfig";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 await connect();
-export const GET = async (res: NextResponse) => {
+export const GET = async () => {
   try {
     const totalExpense = await Expense.aggregate([
       {

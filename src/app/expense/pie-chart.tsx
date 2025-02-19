@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { PieChart, Pie, Sector} from "recharts";
+import { PieChart, Pie, Sector } from "recharts";
 
 // const data = [
 //   { name: "Group A", value: 400 },
@@ -7,7 +7,10 @@ import { PieChart, Pie, Sector} from "recharts";
 //   { name: "Group C", value: 300 },
 //   { name: "Group D", value: 200 }
 // ];
-
+type chartData = {
+  name:string,
+  value:number
+}
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
   const {
@@ -81,38 +84,55 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-export function PieChartz({ data }: { data: { name: string; value: number }[] }) {
+export function PieChartz({
+  data,
+}: {
+  data: { name: string; value: number }[];
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  interface PieEnterEvent {
+    index: number;
+  }
+
   const onPieEnter = useCallback(
-    (_, index) => {
+    (_: PieEnterEvent, index: number) => {
       setActiveIndex(index);
     },
     [setActiveIndex]
   );
-  const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
 
-  React.useEffect(() => {
-      setChartData(data);
-  }, []);
-  // console.log("chartData", chartData);
+  type ChartState = chartData[];
+  const reducer = (state: ChartState, action: { type: string; payload: ChartState }) => {
+    switch (action.type) {
+      case "SET_DATA":
+        return action.payload;
+      default:
+        return state;
+    }
+  };
   
-  // console.log("Pie Data", data);
+  const [chartData, dispatch] = React.useReducer(reducer, [] as chartData[]);
+  
+  React.useEffect(() => {
+    dispatch({ type: "SET_DATA", payload: data });
+  }, [data]);
+
+  
   return (
     <PieChart width={500} height={500}>
-    <Pie
-      activeIndex={activeIndex}
-      activeShape={renderActiveShape}
-      data={chartData}
-      cx={250}
-      cy={250}
-      innerRadius={60}
-      outerRadius={80}
-      fill="#8884d8"
-      dataKey="value"
-      onMouseEnter={onPieEnter}
-    />
-  </PieChart>
+      <Pie
+        activeIndex={activeIndex}
+        activeShape={renderActiveShape}
+        data={chartData}
+        cx={250}
+        cy={250}
+        innerRadius={60}
+        outerRadius={80}
+        fill="#8884d8"
+        dataKey="value"
+        onMouseEnter={onPieEnter}
+      />
+    </PieChart>
   );
 }
-

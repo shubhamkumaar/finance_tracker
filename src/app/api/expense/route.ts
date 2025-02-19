@@ -1,6 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig";
 import { Expense } from "@/models/expenseModel";
-import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 await connect();
 
@@ -22,19 +21,19 @@ export async function POST(req: NextRequest) {
       success: true,
       data: savedExpense,
     });
-  } catch (error: any) {
+  } catch (error:any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET() {
   try {
     const expenses = await Expense.find({});
     return NextResponse.json({
       success: true,
       data: expenses,
     });
-  } catch (error: any) {
+  } catch (error:any ) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
