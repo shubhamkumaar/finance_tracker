@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import React, { PureComponent } from "react";
+import React from "react";
 import {
   BarChart,
   Bar,
@@ -11,7 +11,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Pie,
 } from "recharts";
 
 import toast, { Toaster } from "react-hot-toast";
@@ -299,7 +298,6 @@ function Expense() {
 
       <Toaster />
       <EditDeleteDialog
-        id={id}
         edit={() => {
           setOpenEditExpense(true);
           setEditDeleteDialogOpen(false);

@@ -7,7 +7,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import React from "react";
 
@@ -16,13 +15,11 @@ export function EditDeleteDialog({
   setEditDeleteDialogOpen,
   edit,
   Delete,
-  id,
 }: {
   editDeleteDialogOpen: boolean;
   edit: () => void;
   Delete: () => void;
   setEditDeleteDialogOpen: (open: boolean) => void;
-  id: string;
 }) {
   return (
     <AlertDialog open={editDeleteDialogOpen}>

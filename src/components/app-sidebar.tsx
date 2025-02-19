@@ -1,5 +1,4 @@
 import { Calendar, Home, icons, Inbox, Search, Settings } from "lucide-react"
-import Link from "next/navigation"
 import {
   Sidebar,
   SidebarContent,
