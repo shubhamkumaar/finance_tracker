@@ -7,6 +7,7 @@ import { MonthPicker } from "@/components/month-year-picker";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/components/column";
 import { get } from "http";
+import { set } from "mongoose";
 export default function Home() {
   const [totalMonthlyExpense, setTotalMonthlyExpense] = React.useState(0);
 
@@ -77,14 +78,15 @@ export default function Home() {
     "November",
     "December",
   ];
+
   return (
     <>
       <div className="mt-8 flex justify-center">
-        <div className="container shadow-md border-1 border-gray-200 m-4 p-4 w-[20%] ">
+        <div className="flex flex-col shadow-md border-1 border-gray-200 m-4 p-4 w-[20%] ">
           <h1 className="text-xl font-sans font-bold text-center my-4">
             {monthNames[month.getMonth()]} Month Summary
           </h1>
-          <div className="px-4">
+          <div className="px-4 mt-2">
             <div className="flex justify-between my-2">
               <h2 className="text-lg font-semibold mb-2">Total Expense </h2>
               <h2 className="text-lg font-semibold mb-2">
@@ -108,13 +110,13 @@ export default function Home() {
             </Button>
             {isOpen && (
               <div
+                className="flex flex-col items-center justify-center"
                 ref={refs.setFloating}
                 style={{
                   ...floatingStyles,
+                  zIndex: 1000,
                   backgroundColor: "white",
-                  border: "1px solid #ccc",
-                  padding: "1rem",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  padding: "10px",
                 }}
               >
                 <MonthPicker
@@ -123,17 +125,24 @@ export default function Home() {
                     setMonth(date);
                     getTotalExpense(date.getFullYear(), date.getMonth() + 1);
                     getMonthlyExpense(date.getFullYear(), date.getMonth() + 1);
-
                     console.log("Date", date);
+                    setIsOpen(false);
                   }}
                 />
-                <button onClick={() => setIsOpen(false)}>Close</button>
+                  <Button
+                    variant={"outline"}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Close
+                  </Button>
               </div>
             )}
           </div>
         </div>
         <div className="w-[60%]">
-          <h1 className="text-2xl font-sans font-bold text-center">Recent Expenses</h1>
+          <h1 className="text-2xl font-sans font-bold text-center">
+            Recent Expenses
+          </h1>
           <DataTable
             columns={columns}
             data={recentExpense}

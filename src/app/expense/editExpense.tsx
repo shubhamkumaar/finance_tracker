@@ -31,11 +31,12 @@ import {
 import React from "react";
 
 type Expense = {
+  _id: string;
   type: string;
   amount: number;
   description: string;
   date: Date;
-};
+} | undefined;
 
 export function EditExpense({
   expense,
@@ -52,7 +53,9 @@ export function EditExpense({
   openEditDialog: boolean;
   closeEditDialog: () => void;
 }) {
+  if(expense === undefined) return null;
   const [date, setDate] = React.useState<Date>(expense.date);
+  
   return (
     <Dialog open={openEditDialog} onOpenChange={closeEditDialog}>
       <DialogContent className="sm:max-w-[425px]">
@@ -135,7 +138,7 @@ export function EditExpense({
                     mode="single"
                     selected={date}
                     onSelect={(date: any) => {
-                      // setExpense({ ...expense, date:date});
+                      setExpense({ ...expense, date:date});
                       setDate(date);
                     }}
                     initialFocus
@@ -145,6 +148,7 @@ export function EditExpense({
               <div className="mt-4">
               <TimePicker 
                 date={date}
+                
                 setDate={(date: any) => {
                   setDate(date);
                   setExpense({ ...expense, date: date });

@@ -94,14 +94,16 @@ function addAmount(expenses: any) {
     data[month].expense += expenses[i].amount;
   }
 }
-function Expense() {
+
+export default function Expense() {
   const [editDeleteDialogOpen, setEditDeleteDialogOpen] = React.useState(false);
-  const [expense, setExpense] = React.useState({
-    type: "",
-    amount: 0,
-    description: "",
-    date: new Date(),
-  });
+  const [expense, setExpense] = React.useState<{
+    _id:string
+    type: string,
+    amount: number,
+    description: string,
+    date: Date,
+  }>();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [expenses, setExpenses] = React.useState<
@@ -129,18 +131,42 @@ function Expense() {
   }
 
   const editExpense = async () => {
+    if(!expense){
+      toast.error("Expense cannot be empty");
+      throw new Error("Expense cannot be empty");
+    }
+    if(expense.type === ""){
+      toast.error("Type cannot be empty");
+      throw new Error("Type cannot be empty");
+    }
+    if (!expense.amount) {
+      toast.error("Amount cannot be empty");
+      throw new Error("Amount cannot be empty");
+    }
+    if (expense.amount === 0) {
+      toast.error("Amount cannot be 0");
+      throw new Error("Amount cannot be 0");
+    }
+    if (expense.amount < 0) {
+      toast.error("Amount cannot be negative");
+      throw new Error("Amount cannot be negative");
+    }
+
     try {
       setLoading(true);
       console.log("Edit Expense", expense);
       const res = await axios.patch(`/api/expense`, { ...expense, id });
       console.log("Patch", res.data);
       toast.success("Expense Updated Successfully");
-      setExpenses((prev) => {
-        const index = prev.findIndex((expense) => expense._id === id);
+      setExpenses((expenses) => {
+        const index = expenses.findIndex((expense) => expense._id === id);
         if (index !== -1) {
-          prev[index] = res.data.data;
+          console.log("Index", expenses[index]);
+          console.log("Data", res.data.data);         
+          
+          expenses[index] = res.data.data;
         }
-        return prev;
+        return expenses;
       });
     } catch (error: any) {
       console.log("Edit Expense Error", error.message);
@@ -149,6 +175,7 @@ function Expense() {
       setOpenEditExpense(false);
     }
   };
+
   const deleteExpense = async () => {
     console.log("Delete Expense");
     try {
@@ -166,6 +193,10 @@ function Expense() {
   };
 
   const addExpense = async () => {
+    if(!expense){
+      toast.error("Expense cannot be empty");
+      throw new Error("Expense cannot be empty");
+    }
     if (expense.type === "") {
       toast.error("Type cannot be empty");
       throw new Error("Type cannot be empty");
@@ -207,14 +238,6 @@ function Expense() {
     }
   };
 
-  const getTodayExpenses = async () => {
-    try {
-      const res = await axios.get("/api/expense");
-      console.log("Get Today Expenses success", res.data);
-    } catch (error: any) {
-      console.log("Get Today Expenses Error", error.message);
-    }
-  }
 
   React.useEffect(() => {
     getExpenses();
@@ -226,7 +249,6 @@ function Expense() {
       addPieData(expenses);
     }
   }, [expenses]);
-
   return (
     <div>
       <div className="flex justify-end mt-8">
@@ -277,7 +299,7 @@ function Expense() {
           )}
         </div>
       </div>
-      <div className="flex mx-4 mt-12">
+      <div className="flex mt-12">
         <div className="w-[33%]">
           <h1 className="text-2xl font-bold text-center">
             Category Wise Expenses
@@ -310,4 +332,3 @@ function Expense() {
   );
 }
 
-export default Expense;
