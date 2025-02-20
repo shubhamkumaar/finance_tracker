@@ -20,7 +20,7 @@ import { columns } from "../../components/column";
 import { DataTable } from "../../components/data-table";
 import { EditDeleteDialog } from "./edit-delete-dialog";
 import { EditExpense } from "@/app/expense/editExpense";
-import { PieChartz } from "@/app/expense/pie-chart";
+import { PieChartz } from "@/components/pie-chart";
 
 const data = [
   {
@@ -299,16 +299,26 @@ export default function Expense() {
           )}
         </div>
       </div>
-      <div className="flex mt-12">
+      <div className="flex justify-center mt-12">
         <div className="w-[33%]">
           <h1 className="text-2xl font-bold text-center">
             Category Wise Expenses
           </h1>
-          <div className="mt-2 border-2 border-gray-200 rounded-lg">
+          {/* <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-[50%]">
+                    <div className="flex justify-center items-center">
+                      <PieChartz data={pieData} />
+                    </div>
+                  </div> */}
+          <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-full">
+            <div className="flex justify-center items-center">
+
             {expenses.length > 0 && <PieChartz data={pieData} />}
+            </div>
           </div>
         </div>
-        <div className="w-[66%]">
+        
+      </div>
+      <div className="mx-auto w-[80%]">
           <h1 className="text-2xl text-center">All Expenses</h1>
           <DataTable
             columns={columns}
@@ -316,8 +326,6 @@ export default function Expense() {
             handleExpenseRowClick={handleExpenseRowClick}
           />
         </div>
-      </div>
-
       <Toaster />
       <EditDeleteDialog
         edit={() => {

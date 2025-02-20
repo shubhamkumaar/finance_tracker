@@ -6,8 +6,17 @@ import { Button } from "@/components/ui/button";
 import { MonthPicker } from "@/components/month-year-picker";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/components/column";
-import { get } from "http";
-import { set } from "mongoose";
+import { PieChartz } from "@/components/pie-chart";
+
+function addPieData(data: any) {
+  const pieData = data.map((item: any) => {
+    return {
+      name: item.type,
+      value: item.totalAmount,
+    };
+  });
+  return pieData;
+}
 export default function Home() {
   const [totalMonthlyExpense, setTotalMonthlyExpense] = React.useState(0);
 
@@ -27,6 +36,7 @@ export default function Home() {
     }
   }
   const [monthlyExpense, setMonthlyExpense] = useState([]);
+  // console.log("monthlyExpense", monthlyExpense);
 
   const getMonthlyExpense = async (year: number, month: number) => {
     try {
@@ -78,11 +88,19 @@ export default function Home() {
     "November",
     "December",
   ];
-
+  if (monthlyExpense.length === 0) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
-      <div className="mt-8 flex justify-center">
-        <div className="flex flex-col shadow-md border-1 border-gray-200 m-4 p-4 w-[20%] ">
+      <div className="mt-8 flex justify-center gap-4">
+        <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-[50%]">
+          <div className="flex justify-center items-center">
+            <PieChartz data={addPieData(monthlyExpense)} />
+          </div>
+        </div>
+
+        <div className="flex flex-col shadow-md border-1 border-gray-200 m-4 p-4 w-[30%] ">
           <h1 className="text-xl font-sans font-bold text-center my-4">
             {monthNames[month.getMonth()]} Month Summary
           </h1>
@@ -129,26 +147,23 @@ export default function Home() {
                     setIsOpen(false);
                   }}
                 />
-                  <Button
-                    variant={"outline"}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Close
-                  </Button>
+                <Button variant={"outline"} onClick={() => setIsOpen(false)}>
+                  Close
+                </Button>
               </div>
             )}
           </div>
         </div>
-        <div className="w-[60%]">
-          <h1 className="text-2xl font-sans font-bold text-center">
-            Recent Expenses
-          </h1>
-          <DataTable
-            columns={columns}
-            data={recentExpense}
-            handleExpenseRowClick={(id: string) => {}}
-          />
-        </div>
+      </div>
+      <div className="mx-auto mt-8 w-[80%]">
+        <h1 className="text-2xl font-sans font-bold text-center">
+          Recent Expenses
+        </h1>
+        <DataTable
+          columns={columns}
+          data={recentExpense}
+          handleExpenseRowClick={(id: string) => {}}
+        />
       </div>
     </>
   );
