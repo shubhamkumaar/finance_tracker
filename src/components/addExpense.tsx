@@ -34,7 +34,6 @@ import {
 
 
 type expense = {
-  _id:string,
   type: string;
   amount: number;
   description: string;
@@ -51,7 +50,6 @@ export function AddExpense({
   loading: boolean;
 }) {
   const [expense, setExpense] = React.useState({
-    _id:"",
     type: "others",
     amount: 0,
     description: "",

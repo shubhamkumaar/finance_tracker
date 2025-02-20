@@ -97,13 +97,12 @@ function addAmount(expenses: any) {
 
 export default function Expense() {
   const [editDeleteDialogOpen, setEditDeleteDialogOpen] = React.useState(false);
-  const [expense, setExpense] = React.useState<{
-    _id:string
-    type: string,
-    amount: number,
-    description: string,
-    date: Date,
-  }>();
+  const [expense, setExpense] = React.useState({
+    type: "",
+    amount: 0,
+    description: "",
+    date: new Date(),
+  });
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [expenses, setExpenses] = React.useState<

@@ -31,12 +31,11 @@ import {
 import React from "react";
 
 type Expense = {
-  _id: string;
   type: string;
   amount: number;
   description: string;
   date: Date;
-} | undefined;
+} ;
 
 export function EditExpense({
   expense,
