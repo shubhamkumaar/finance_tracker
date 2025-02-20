@@ -94,66 +94,83 @@ export default function Home() {
   return (
     <>
       <div className="mt-8 flex justify-center gap-4">
-        <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-[50%]">
+        <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-[50%] rounded-xl">
           <div className="flex justify-center items-center">
             <PieChartz data={addPieData(monthlyExpense)} />
           </div>
         </div>
 
-        <div className="flex flex-col shadow-md border-1 border-gray-200 m-4 p-4 w-[30%] ">
+        <div
+          style={{
+            backgroundImage:
+              "linear-gradient(to right top, #1d3705, #39600d, #5a8c13, #7fbb15, #a8eb12)",
+          }}
+          className="flex flex-col shadow-md border border-gray-200 m-4 p-4 w-[30%] h-full min-h-[300px] rounded-xl"
+        >
           <h1 className="text-xl font-sans font-bold text-center my-4">
             {monthNames[month.getMonth()]} Month Summary
           </h1>
-          <div className="px-4 mt-2">
-            <div className="flex justify-between my-2">
+
+          {/* Content wrapper to push the button down */}
+          <div className="flex flex-col flex-grow px-4 mt-2">
+            <div className="flex justify-between my-2 mt-8">
               <h2 className="text-lg font-semibold mb-2">Total Expense </h2>
               <h2 className="text-lg font-semibold mb-2">
                 {totalMonthlyExpense}
               </h2>
             </div>
-            {monthlyExpense.length > 0 &&
-              monthlyExpense.map((expense: any, index) => (
-                <div key={index} className="flex justify-between my-2">
-                  <p>
-                    {String(expense.type[0]).toUpperCase() +
-                      String(expense.type).slice(1)}
-                  </p>
-                  <p>{expense.totalAmount}</p>
-                </div>
-              ))}
+            <div className="mb-8">
+              {monthlyExpense.length > 0 ? (
+                monthlyExpense.map((expense: any, index) => (
+                  <div key={index} className="flex justify-between my-2">
+                    <p className="text-lg font-semibold">
+                      {String(expense.type[0]).toUpperCase() +
+                        String(expense.type).slice(1)}
+                    </p>
+                    <p className="text-lg font-semibold">
+                      {expense.totalAmount}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="flex-grow"></div> // This will push the button down
+              )}
+            </div>
           </div>
-          <div className="flex justify-center">
+
+          {/* Change Month Button Always at Bottom */}
+          <div className="flex justify-center mt-auto">
             <Button ref={refs.setReference} onClick={() => setIsOpen(!isOpen)}>
               Change Month
             </Button>
-            {isOpen && (
-              <div
-                className="flex flex-col items-center justify-center"
-                ref={refs.setFloating}
-                style={{
-                  ...floatingStyles,
-                  zIndex: 1000,
-                  backgroundColor: "white",
-                  padding: "10px",
-                }}
-              >
-                <MonthPicker
-                  currentMonth={month}
-                  onMonthChange={(date: Date) => {
-                    setMonth(date);
-                    getTotalExpense(date.getFullYear(), date.getMonth() + 1);
-                    getMonthlyExpense(date.getFullYear(), date.getMonth() + 1);
-                    console.log("Date", date);
-                    setIsOpen(false);
-                  }}
-                />
-                <Button variant={"outline"} onClick={() => setIsOpen(false)}>
-                  Close
-                </Button>
-              </div>
-            )}
           </div>
         </div>
+        {isOpen && (
+          <div
+            className="flex flex-col items-center justify-center"
+            ref={refs.setFloating}
+            style={{
+              ...floatingStyles,
+              zIndex: 1000,
+              backgroundColor: "white",
+              padding: "10px",
+            }}
+          >
+            <MonthPicker
+              currentMonth={month}
+              onMonthChange={(date: Date) => {
+                setMonth(date);
+                getTotalExpense(date.getFullYear(), date.getMonth() + 1);
+                getMonthlyExpense(date.getFullYear(), date.getMonth() + 1);
+                console.log("Date", date);
+                setIsOpen(false);
+              }}
+            />
+            <Button variant={"outline"} onClick={() => setIsOpen(false)}>
+              Close
+            </Button>
+          </div>
+        )}
       </div>
       <div className="mx-auto mt-8 w-[80%]">
         <h1 className="text-2xl font-sans font-bold text-center">

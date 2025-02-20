@@ -309,7 +309,7 @@ export default function Expense() {
                       <PieChartz data={pieData} />
                     </div>
                   </div> */}
-          <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-full">
+          <div className="flex justify-center items-center shadow-md border border-gray-200 m-4 p-4 w-full rounded-xl">
             <div className="flex justify-center items-center">
 
             {expenses.length > 0 && <PieChartz data={pieData} />}
